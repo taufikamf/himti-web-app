@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useApi } from "@/hooks/useApi";
-import {
-	getGalleryItems,
-	GalleryItem,
-} from "@/services/gallery/galleryService";
+import { getGalleryItems, Event } from "@/services/gallery/galleryService";
+import Link from "next/link";
+import ErrorPage from "@/components/ui/ErrorPage";
 import { PaginatedResponse } from "@/types/api";
+import Galeri from "@/components/Gallery/Gallery";
 
 export default function GalleryPage() {
 	const [page, setPage] = useState(1);
 	const { data, loading, error, execute } =
-		useApi<PaginatedResponse<GalleryItem[]>>(getGalleryItems);
+		useApi<PaginatedResponse<Event[]>>(getGalleryItems);
 
 	useEffect(() => {
 		execute(page, 12);
@@ -19,79 +19,88 @@ export default function GalleryPage() {
 
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="text-center">
-					<h2 className="text-2xl font-bold text-red-600 mb-2">Error</h2>
-					<p className="text-gray-600">{error}</p>
-					<button
-						onClick={() => execute(page, 12)}
-						className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-					>
-						Try Again
-					</button>
-				</div>
-			</div>
+			<ErrorPage
+				title="Error Loading Gallery"
+				message={error}
+				buttonText="Try Again"
+				onRetry={() => execute(page, 12)}
+			/>
 		);
 	}
 
 	return (
-		<div className="container mx-auto px-4 py-8">
-			<h1 className="text-3xl font-bold mb-8">Gallery</h1>
+		<div className="container mx-auto px-[60px] py-8 w-full">
+			<h1 className="text-[32px] font-extrabold mb-8">Gallery</h1>
 
 			{loading ? (
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-					{[...Array(12)].map((_, index) => (
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+					{[...Array(6)].map((_, index) => (
 						<div
 							key={index}
-							className="bg-gray-200 rounded-lg aspect-square animate-pulse"
+							className="bg-white/10 rounded-lg aspect-[1.5] animate-pulse"
 						/>
 					))}
 				</div>
 			) : (
 				<>
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-						{data?.data.map((item) => (
-							<div
-								key={item.id}
-								className="bg-white rounded-lg shadow-md overflow-hidden"
-							>
-								<div className="aspect-square relative">
-									<img
-										src={item.imageUrl}
-										alt={item.title}
-										className="object-cover w-full h-full"
-									/>
-								</div>
-								<div className="p-4">
-									<h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-									<p className="text-gray-600 text-sm">{item.description}</p>
-								</div>
-							</div>
-						))}
-					</div>
+					{!data?.data || data.data.length === 0 ? (
+						<div className="text-center py-12">
+							<p className="text-white/70">No gallery items found.</p>
+						</div>
+					) : (
+						<div className="space-y-12">
+							{data.data.map((event) => (
+								<div key={event.id} className="space-y-4">
+									<div className="flex items-center justify-between">
+										<h2 className="text-2xl font-bold">{event.name}</h2>
+										<Link
+											href={`/gallery/event/${event.id}`}
+											className="text-primary hover:text-primary/80 transition-colors"
+										>
+											View all
+										</Link>
+									</div>
 
-					{data?.meta && (
-						<div className="mt-8 flex justify-center gap-2">
-							<button
-								onClick={() => setPage((p) => Math.max(1, p - 1))}
-								disabled={page === 1}
-								className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-							>
-								Previous
-							</button>
-							<span className="px-4 py-2">
-								Page {page} of {data.meta.totalPages}
-							</span>
-							<button
-								onClick={() => setPage((p) => p + 1)}
-								disabled={page === data.meta.totalPages}
-								className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-							>
-								Next
-							</button>
+									<div className="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-4 gap-4">
+										{event.gallery &&
+											event.gallery
+												.slice(0, 6)
+												.map((item) => (
+													<Galeri
+														key={item.id}
+														imageUrl={item.photo_url}
+														alt={event.name}
+													/>
+												))}
+									</div>
+								</div>
+							))}
 						</div>
 					)}
 				</>
+			)}
+
+			{/* Pagination */}
+			{data?.meta && data.meta.totalPages > 1 && (
+				<div className="flex justify-center mt-8">
+					<div className="flex space-x-2">
+						{Array.from({ length: data.meta.totalPages }, (_, i) => i + 1).map(
+							(pageNum) => (
+								<button
+									key={pageNum}
+									onClick={() => setPage(pageNum)}
+									className={`px-4 py-2 rounded ${
+										pageNum === data.meta.currentPage
+											? "bg-primary text-white"
+											: "bg-white/10 hover:bg-white/20"
+									}`}
+								>
+									{pageNum}
+								</button>
+							)
+						)}
+					</div>
+				</div>
 			)}
 		</div>
 	);

@@ -10,6 +10,7 @@ export interface AuthResponse {
       id: string;
       name: string;
       email: string;
+      role: string;
       profile_picture?: string;
     };
   };
@@ -49,6 +50,7 @@ export const login = async (email: string, password: string): Promise<ApiRespons
     });
     return response.data;
   } catch (error) {
+    console.error("Login error:", error);
     throw error;
   }
 };

@@ -5,9 +5,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  role?: string;
   profile_picture?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface UpdateUserRequest {
@@ -17,9 +18,16 @@ export interface UpdateUserRequest {
 
 export const getCurrentUser = async (): Promise<ApiResponse<User>> => {
   try {
-    const response = await api.get<ApiResponse<User>>('/users/me');
-    return response.data;
+    const response = await api.get<User>('/users/me');
+    
+    // Transform the direct user object to match our ApiResponse format
+    return {
+      status: 200,
+      message: "User fetched successfully",
+      data: response.data
+    };
   } catch (error) {
+    console.error("Error fetching current user:", error);
     throw error;
   }
 };

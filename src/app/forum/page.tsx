@@ -3,10 +3,23 @@
 import { useEffect, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { getAllForums, Forum, likeForum } from "@/services/forums/forumService";
-import { PaginatedResponse } from "@/types/api";
 import Link from "next/link";
-import Image from "next/image";
-import { Heart, MessageCircle, Calendar } from "lucide-react";
+import ErrorPage from "@/components/ui/ErrorPage";
+import { PaginatedResponse } from "@/types/api";
+import { formatDate } from "@/utils/date";
+import Card from "@/components/Card/Card";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+
+// Update Forum type to include is_liked
+interface ExtendedForum extends Forum {
+	is_liked?: boolean;
+}
 
 export default function ForumPage() {
 	const [page, setPage] = useState(1);
@@ -17,72 +30,65 @@ export default function ForumPage() {
 		loading,
 		error,
 		execute: fetchForums,
-	} = useApi<PaginatedResponse<Forum[]>>(getAllForums);
+	} = useApi<PaginatedResponse<ExtendedForum[]>>(getAllForums);
 
 	const { execute: executeLike } = useApi(likeForum);
 
 	useEffect(() => {
-		fetchForums(status);
+		fetchForums(status, page);
 	}, [fetchForums, status, page]);
 
 	const handleLike = async (id: string) => {
 		await executeLike(id);
-		fetchForums(status); // Refresh the forums list
-	};
-
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-		});
+		fetchForums(status, page); // Refresh the forums list
 	};
 
 	if (loading) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
-				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
 			</div>
 		);
 	}
 
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="text-center">
-					<h2 className="text-2xl font-bold text-red-600 mb-2">Error</h2>
-					<p className="text-gray-600">{error}</p>
-					<button
-						onClick={() => fetchForums(status)}
-						className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-					>
-						Try Again
-					</button>
-				</div>
-			</div>
+			<ErrorPage
+				title="Error Loading Forum Posts"
+				message={error}
+				buttonText="Try Again"
+				onRetry={() => fetchForums(status, page)}
+			/>
 		);
 	}
 
 	const forums = forumsData?.data || [];
-	const meta = forumsData?.meta;
+	const totalPages = forumsData?.meta?.totalPages || 1;
+	const currentPage = forumsData?.meta?.currentPage || 1;
 
 	return (
-		<div className="container mx-auto px-4 py-8">
+		<div className="container mx-auto px-[60px] py-8 w-full">
 			<div className="flex justify-between items-center mb-8">
-				<h1 className="text-3xl font-bold">Forum</h1>
+				<h1 className="text-[32px] font-extrabold">Forum</h1>
 				<div className="flex gap-4">
-					<select
-						value={status || ""}
-						onChange={(e) => setStatus(e.target.value || undefined)}
-						className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+					<Select
+						value={status || "all"}
+						onValueChange={(value) =>
+							setStatus(value === "all" ? undefined : value)
+						}
 					>
-						<option value="">All Posts</option>
-						<option value="PUBLISHED">Published</option>
-						<option value="DRAFT">Draft</option>
-					</select>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="All Posts" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="all">All Posts</SelectItem>
+							<SelectItem value="PUBLISHED">Published</SelectItem>
+							<SelectItem value="DRAFT">Draft</SelectItem>
+						</SelectContent>
+					</Select>
 					<Link
 						href="/forum/create"
-						className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
+						className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors"
 					>
 						Create Post
 					</Link>
@@ -91,10 +97,10 @@ export default function ForumPage() {
 
 			{forums.length === 0 ? (
 				<div className="text-center py-12">
-					<p className="text-gray-600">No forum posts found.</p>
+					<p className="text-white/70">No forum posts found.</p>
 					<Link
 						href="/forum/create"
-						className="inline-block mt-4 px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
+						className="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors"
 					>
 						Create Your First Post
 					</Link>
@@ -102,87 +108,57 @@ export default function ForumPage() {
 			) : (
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{forums.map((forum) => (
-						<div
+						<Card
 							key={forum.id}
-							className="bg-white rounded-lg shadow-md overflow-hidden"
-						>
-							{forum.thumbnail && (
-								<div className="aspect-video relative">
-									<Image
-										src={forum.thumbnail}
-										alt={forum.title}
-										layout="fill"
-										objectFit="cover"
-									/>
-								</div>
-							)}
-							<div className="p-6">
-								<Link href={`/forum/${forum.id}`}>
-									<h2 className="text-xl font-semibold mb-2 hover:text-teal-600 transition-colors">
-										{forum.title}
-									</h2>
-								</Link>
-								<p className="text-gray-600 mb-4 line-clamp-3">
-									{forum.content}
-								</p>
-								<div className="flex items-center justify-between text-sm text-gray-500">
-									<div className="flex items-center space-x-4">
-										<button
-											onClick={() => handleLike(forum.id)}
-											className="flex items-center space-x-1 hover:text-red-500 transition-colors"
-										>
-											<Heart className="w-5 h-5" />
-											<span>{forum.likes}</span>
-										</button>
-										<div className="flex items-center space-x-1">
-											<MessageCircle className="w-5 h-5" />
-											<span>{forum.comments.length}</span>
-										</div>
-									</div>
-									<div className="flex items-center space-x-1">
-										<Calendar className="w-4 h-4" />
-										<span>{formatDate(forum.createdAt)}</span>
-									</div>
-								</div>
-								<div className="mt-4 flex items-center space-x-2">
-									{forum.author.profile_picture && (
-										<Image
-											src={forum.author.profile_picture}
-											alt={forum.author.name}
-											width={24}
-											height={24}
-											className="rounded-full"
-										/>
-									)}
-									<span className="text-sm text-gray-600">
-										{forum.author.name}
-									</span>
-								</div>
-							</div>
-						</div>
+							id={forum.id}
+							title={forum.title}
+							date={formatDate(forum.created_at)}
+							imageUrl={forum?.thumbnail}
+							href={`/forum/${forum.id}`}
+							likes={forum._count.likes}
+							type="forum"
+							comments={forum._count.comments}
+							onLike={handleLike}
+							isLiked={forum.is_liked}
+						/>
 					))}
 				</div>
 			)}
 
-			{meta && meta.totalPages > 1 && (
-				<div className="mt-8 flex justify-center gap-2">
-					<button
-						onClick={() => setPage((p) => Math.max(1, p - 1))}
-						disabled={page === 1}
-						className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors disabled:opacity-50"
-					>
-						Previous
-					</button>
-					<span className="px-4 py-2">
-						Page {page} of {meta.totalPages}
-					</span>
-					<button
-						onClick={() => setPage((p) => p + 1)}
-						disabled={page === meta.totalPages}
-						className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors disabled:opacity-50"
-					>
-						Next
-					</button>
+			{/* Pagination */}
+			{totalPages > 1 && (
+				<div className="flex justify-center mt-8">
+					<div className="flex space-x-2">
+						<button
+							onClick={() => setPage(Math.max(1, page - 1))}
+							className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+							disabled={currentPage === 1}
+						>
+							Previous
+						</button>
+						{Array.from({ length: totalPages }, (_, i) => i + 1).map(
+							(pageNum) => (
+								<button
+									key={pageNum}
+									onClick={() => setPage(pageNum)}
+									className={`px-4 py-2 rounded ${
+										pageNum === currentPage
+											? "bg-primary text-white"
+											: "bg-gray-800 hover:bg-gray-700 text-white"
+									}`}
+								>
+									{pageNum}
+								</button>
+							)
+						)}
+						<button
+							onClick={() => setPage(Math.min(totalPages, page + 1))}
+							className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+							disabled={currentPage === totalPages}
+						>
+							Next
+						</button>
+					</div>
 				</div>
 			)}
 		</div>

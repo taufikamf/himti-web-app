@@ -45,7 +45,6 @@ export default function RegisterPage() {
 				response.status === 201 ||
 				response.data.message === "Registration successful"
 			) {
-				console.log("Registration successful", response.data);
 				router.push("/auth/login");
 			} else {
 				setError("Registration failed");

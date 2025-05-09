@@ -15,9 +15,9 @@ export default function Section2() {
 					<path
 						d="M14.4317 1.77368L14.1347 12.2565L3.9373 2.70913L14.4317 1.77368ZM14.4317 1.77368L2.09868 14.8231"
 						stroke="white"
-						stroke-width="3"
-						stroke-linecap="round"
-						stroke-linejoin="round"
+						strokeWidth="3"
+						strokeLinecap="round"
+						strokeLinejoin="round"
 					/>
 				</svg>
 			</section>
@@ -25,6 +25,7 @@ export default function Section2() {
 				<Card
 					title="Open Recruitment Panitia PBAK Jurusan 2022"
 					date="29 Juli 2022"
+					imageUrl="https://placehold.co/600x400/green/white.png?text=Hello+World"
 					href="/"
 				/>
 				<Card
