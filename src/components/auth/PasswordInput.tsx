@@ -9,6 +9,7 @@ interface PasswordInputProps {
 	placeholder?: string;
 	showPwdMeter?: boolean;
 	className?: string;
+	disabled?: boolean;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -17,6 +18,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 	placeholder = "Enter password",
 	showPwdMeter = false,
 	className,
+	disabled = false,
 }) => {
 	const [showPassword, setShowPassword] = useState(false);
 
@@ -35,7 +37,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 					className={cn(
 						"w-full flex flex-1 transition-all duration-200",
 						"mt-1 bg-gray-700 border border-gray-600 rounded-md",
-						"focus-within:outline-none focus-within:ring-2 focus-within:ring-teal-500"
+						"focus-within:outline-none focus-within:ring-2 focus-within:ring-teal-500",
+						disabled && "opacity-50 cursor-not-allowed"
 					)}
 				>
 					<input
@@ -43,14 +46,16 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 						placeholder={placeholder}
 						value={value}
 						onChange={(e) => onChange(e.target.value)}
-						className="w-full px-3 py-2 bg-transparent text-white placeholder-gray-400 focus:outline-none"
+						disabled={disabled}
+						className="w-full px-3 py-2 bg-transparent text-white placeholder-gray-400 focus:outline-none disabled:cursor-not-allowed"
 						onPaste={(e) => e.preventDefault()}
 					/>
 					<button
 						type="button"
 						onClick={handleTogglePassword}
 						onKeyDown={handleKeyDown}
-						className="absolute inset-y-0 right-0 flex items-center pr-3"
+						disabled={disabled}
+						className="absolute inset-y-0 right-0 flex items-center pr-3 disabled:cursor-not-allowed"
 						tabIndex={0}
 						aria-label={showPassword ? "Hide password" : "Show password"}
 					>

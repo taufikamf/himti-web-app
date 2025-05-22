@@ -1,6 +1,7 @@
 // services/authService.ts
 import api from '../api';
 import { ApiResponse } from '@/types/api';
+import { AxiosError } from 'axios';
 
 export interface AuthResponse {
   success: boolean;
@@ -64,6 +65,12 @@ export const register = async (name: string, email: string, password: string): P
     });
     return response.data;
   } catch (error) {
+    // Extract meaningful error message from the response if available
+    const axiosError = error as AxiosError<{ message: string }>;
+    if (axiosError.response?.data?.message) {
+      throw new Error(axiosError.response.data.message);
+    }
+    // Default error handling
     throw error;
   }
 };

@@ -34,7 +34,6 @@ export default function DepartmentPage({
 
 			try {
 				const data = await getDepartmentBySlug(params.slug);
-
 				if (data) {
 					setDepartment(data);
 					// Set active tab to first division by default if there are divisions

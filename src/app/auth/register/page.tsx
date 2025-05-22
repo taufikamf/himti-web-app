@@ -14,6 +14,7 @@ export default function RegisterPage() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [emailError, setEmailError] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
 	const handlePasswordChange = (newPassword: string) => {
@@ -33,34 +34,25 @@ export default function RegisterPage() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError("");
+		setIsLoading(true);
 
 		if (!email.endsWith("@mhs.uinjkt.ac.id")) {
 			setEmailError("Must using mhs email");
+			setIsLoading(false);
 			return;
 		}
 
 		try {
-			const response = await register(name, email, password);
-			if (
-				response.status === 201 ||
-				response.data.message === "Registration successful"
-			) {
-				router.push("/auth/login");
-			} else {
-				setError("Registration failed");
-			}
+			await register(name, email, password);
+			router.push("/auth/login");
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				setError(error.message);
-			} else if (
-				typeof error === "object" &&
-				error !== null &&
-				"message" in error
-			) {
-				setError(error.message as string);
 			} else {
-				setError("An unexpected error occurred");
+				setError("An unexpected error occurred. Please try again.");
 			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -100,7 +92,8 @@ export default function RegisterPage() {
 							type="text"
 							autoComplete="name"
 							required
-							className="mt-1 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
+							disabled={isLoading}
+							className="mt-1 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
 							placeholder="Enter your full name"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
@@ -119,9 +112,10 @@ export default function RegisterPage() {
 							type="email"
 							autoComplete="email"
 							required
+							disabled={isLoading}
 							className={`mt-1 w-full px-3 py-2 bg-gray-700 border ${
 								emailError ? "border-red-500" : "border-gray-600"
-							} rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500`}
+							} rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed`}
 							placeholder="Enter your email (@mhs.uinjkt.ac.id)"
 							value={email}
 							onChange={handleEmailChange}
@@ -142,14 +136,42 @@ export default function RegisterPage() {
 							onChange={handlePasswordChange}
 							showPwdMeter={true}
 							placeholder="Enter your password"
+							disabled={isLoading}
 						/>
 					</div>
 					<div>
 						<button
 							type="submit"
-							className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300"
+							disabled={isLoading}
+							className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-semibold py-2 px-4 rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
 						>
-							Sign up
+							{isLoading ? (
+								<>
+									<svg
+										className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<circle
+											className="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											strokeWidth="4"
+										></circle>
+										<path
+											className="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
+									</svg>
+									Signing up...
+								</>
+							) : (
+								"Sign up"
+							)}
 						</button>
 					</div>
 				</form>

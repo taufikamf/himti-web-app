@@ -77,8 +77,8 @@ export const getDepartmentBySlug = async (slug: string): Promise<Department | nu
     const response = await api.get(`/departments/slug/${slug}`);
     
     // Validate the data structure
-    if (response.data && typeof response.data === 'object' && response.data.id) {
-      const department: Department = { ...response.data };
+    if (response.data.data && typeof response.data.data === 'object' && response.data.data.id) {
+      const department: Department = { ...response.data.data };
       
       // Make sure divisions is always an array
       if (!Array.isArray(department.divisions)) {
