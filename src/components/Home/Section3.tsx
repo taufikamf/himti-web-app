@@ -26,8 +26,8 @@ export default function Section3() {
 	}, [fetchArticles]);
 
 	return (
-		<section className="flex flex-col border-white py-7 border-t w-full mb-10">
-			<section className="flex flex-row justify-between">
+		<section className="flex flex-col border-white py-4 md:py-7 border-t w-full mb-6 md:mb-10">
+			<section className="flex flex-row justify-between items-center">
 				<h5 className="text-base font-extrabold">Blog</h5>
 				<Link href="/blog">
 					<svg
@@ -36,7 +36,7 @@ export default function Section3() {
 						height="17"
 						viewBox="0 0 16 17"
 						fill="none"
-						className="cursor-pointer"
+						className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
 					>
 						<path
 							d="M14.4317 1.77368L14.1347 12.2565L3.9373 2.70913L14.4317 1.77368ZM14.4317 1.77368L2.09868 14.8231"
@@ -48,17 +48,19 @@ export default function Section3() {
 					</svg>
 				</Link>
 			</section>
-			<section className="grid grid-cols-2 gap-8 mt-9">
+			<section className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4 md:mt-9">
 				{loading ? (
 					// Loading skeletons
 					Array.from({ length: 4 }).map((_, index) => (
 						<div
 							key={index}
-							className="bg-white/10 rounded-lg h-[200px] animate-pulse"
+							className="bg-white/10 rounded-lg h-[160px] md:h-[200px] animate-pulse"
 						/>
 					))
 				) : error ? (
-					<p className="text-red-500 col-span-2">Failed to load blog posts</p>
+					<p className="text-red-500 col-span-1 md:col-span-2">
+						Failed to load blog posts
+					</p>
 				) : (
 					articlesData?.data?.map((article) => (
 						<Card

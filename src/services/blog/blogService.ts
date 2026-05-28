@@ -44,8 +44,8 @@ export const getArticles = async (
 
 export const getArticleById = async (id: string): Promise<Article> => {
   try {
-    const response = await api.get<Article>(`/articles/${id}`);
-    return response.data;
+    const response = await api.get<ApiResponse<Article>>(`/articles/${id}`);
+    return response.data.data;
   } catch (error) {
     throw error;
   }

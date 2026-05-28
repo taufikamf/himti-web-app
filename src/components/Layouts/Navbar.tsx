@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleUserRound, User, LogOut, LogIn } from "lucide-react";
+import { CircleUserRound, User, LogOut, LogIn, Menu } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,7 +12,12 @@ import { useDepartments } from "@/context/DepartmentContext";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Navbar() {
+interface NavbarProps {
+	isMobileView: boolean;
+	toggleSidebar: () => void;
+}
+
+export default function Navbar({ isMobileView, toggleSidebar }: NavbarProps) {
 	const router = useRouter();
 	const { logout, user, loading: authLoading } = useAuth();
 	const { departments, loading: departmentsLoading } = useDepartments();
@@ -37,39 +42,54 @@ export default function Navbar() {
 	);
 
 	return (
-		<nav className="flex py-[29px] px-[60px]">
-			<div className="border-white py-7 border-t text-white w-full justify-between flex flex-row">
-				<h1 className="text-[32px] font-extrabold">HIMTI UIN Jakarta</h1>
-				<div className="flex flex-row gap-[80px] pt-2 text-sm font-bold">
-					{departmentsLoading ? (
-						<>
-							<Skeleton className="h-8 w-24" />
-							<Skeleton className="h-8 w-28" />
-							<Skeleton className="h-8 w-20" />
-							<Skeleton className="h-8 w-26" />
-							<Skeleton className="h-8 w-22" />
-						</>
-					) : validDepartments.length > 0 ? (
-						validDepartments.map((dept) => (
-							<Link
-								key={dept.id}
-								href={`/departments/${dept.slug}`}
-								className="hover:text-primary transition-colors"
-							>
-								{dept.department.includes(" ") ? (
-									<>
-										{dept.department.split(" ")[0]} <br />
-										{dept.department.split(" ").slice(1).join(" ")}
-									</>
-								) : (
-									dept.department
-								)}
-							</Link>
-						))
-					) : (
-						<span className="text-gray-500">No departments available</span>
-					)}
-				</div>
+		<nav className={`flex py-4 md:py-[29px] px-4 md:px-[60px] w-full`}>
+			<div className="border-white py-4 md:py-7 border-t text-white w-full justify-between flex flex-row items-center">
+				{isMobileView && (
+					<button
+						onClick={toggleSidebar}
+						className="mr-4 focus:outline-none"
+						aria-label="Toggle menu"
+					>
+						<Menu size={24} />
+					</button>
+				)}
+
+				<h1 className="text-xl md:text-[32px] font-extrabold">
+					HIMTI UIN Jakarta
+				</h1>
+
+				{!isMobileView && (
+					<div className="hidden md:flex flex-row gap-4 md:gap-[80px] pt-2 text-sm font-bold">
+						{departmentsLoading ? (
+							<>
+								<Skeleton className="h-8 w-24" />
+								<Skeleton className="h-8 w-28" />
+								<Skeleton className="h-8 w-20" />
+								<Skeleton className="h-8 w-26" />
+								<Skeleton className="h-8 w-22" />
+							</>
+						) : validDepartments.length > 0 ? (
+							validDepartments.map((dept) => (
+								<Link
+									key={dept.id}
+									href={`/departments/${dept.slug}`}
+									className="hover:text-primary transition-colors"
+								>
+									{dept.department.includes(" ") ? (
+										<>
+											{dept.department.split(" ")[0]} <br />
+											{dept.department.split(" ").slice(1).join(" ")}
+										</>
+									) : (
+										dept.department
+									)}
+								</Link>
+							))
+						) : (
+							<span className="text-gray-500">No departments available</span>
+						)}
+					</div>
+				)}
 
 				{authLoading ? (
 					<Skeleton className="h-9 w-9 rounded-full" />
@@ -83,7 +103,7 @@ export default function Navbar() {
 										alt="Profile"
 										width={35}
 										height={35}
-										className="h-full w-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+										className="h-full w-full object-cover cursor-pointer hover:opacity-80 transition-opacity bg-white"
 									/>
 								</div>
 							) : (

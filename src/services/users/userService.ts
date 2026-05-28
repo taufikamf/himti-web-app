@@ -18,14 +18,8 @@ export interface UpdateUserRequest {
 
 export const getCurrentUser = async (): Promise<ApiResponse<User>> => {
   try {
-    const response = await api.get<User>('/users/me');
-    
-    // Transform the direct user object to match our ApiResponse format
-    return {
-      status: 200,
-      message: "User fetched successfully",
-      data: response.data
-    };
+    const response = await api.get<ApiResponse<User>>('/users/me');
+    return response.data;
   } catch (error) {
     console.error("Error fetching current user:", error);
     throw error;
@@ -57,4 +51,4 @@ export const updateUser = async (id: string, data: UpdateUserRequest): Promise<A
   } catch (error) {
     throw error;
   }
-}; 
+};

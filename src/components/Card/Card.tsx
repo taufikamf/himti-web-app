@@ -69,7 +69,7 @@ const Card: React.FC<CardProps> = ({
 	return (
 		<div
 			onClick={handleCardClick}
-			className="flex flex-col text-black p-[40px] bg-white h-[400px] justify-between cursor-pointer relative overflow-hidden"
+			className="flex flex-col text-black p-4 md:p-[40px] bg-white h-[250px] md:h-[400px] justify-between cursor-pointer relative overflow-hidden"
 			role="button"
 			tabIndex={0}
 			aria-label={`Card: ${title}`}
@@ -92,7 +92,7 @@ const Card: React.FC<CardProps> = ({
 
 			{/* Card Content */}
 			<div className="flex flex-row justify-between relative z-10">
-				<h1 className="text-[35px] leading-[50px] max-w-[80%] font-extrabold">
+				<h1 className="text-xl md:text-[35px] leading-tight md:leading-[50px] max-w-[80%] font-extrabold">
 					{title}
 				</h1>
 				<div>
@@ -102,6 +102,7 @@ const Card: React.FC<CardProps> = ({
 						height="17"
 						viewBox="0 0 16 17"
 						fill="none"
+						className="w-4 h-4 md:w-5 md:h-5"
 					>
 						<path
 							d="M14.4317 2.40771L14.1347 12.8905L3.9373 3.34317L14.4317 2.40771ZM14.4317 2.40771L2.09868 15.4572"
@@ -116,28 +117,28 @@ const Card: React.FC<CardProps> = ({
 
 			{/* Bottom Bar */}
 			<div className="flex justify-between items-end">
-				<p className="text-xl font-normal relative z-10">{date}</p>
+				<p className="text-base md:text-xl font-normal relative z-10">{date}</p>
 
-				<div className="flex gap-4 relative z-20">
+				<div className="flex gap-2 md:gap-4 relative z-20">
 					{onLike && id && (
 						<button
 							ref={likeButtonRef}
 							type="button"
 							onClick={handleLikeClick}
-							className={`flex items-center gap-1 px-2 py-1 rounded-md hover:bg-gray-200 transition-colors group ${
+							className={`flex items-center gap-1 px-1 md:px-2 py-1 rounded-md hover:bg-gray-200 transition-colors group ${
 								isLiked ? "bg-gray-100" : ""
 							}`}
 							aria-label={isLiked ? "Unlike" : "Like"}
 						>
 							<Heart
-								className={`w-5 h-5 transition-colors ${
+								className={`w-4 h-4 md:w-5 md:h-5 transition-colors ${
 									isLiked
 										? "text-red-500 fill-red-500"
 										: "group-hover:text-red-500"
 								}`}
 							/>
 							<span
-								className={`${
+								className={`text-sm md:text-base ${
 									isLiked
 										? "text-red-500 font-medium"
 										: "group-hover:text-red-500 group-hover:font-medium"
@@ -148,9 +149,9 @@ const Card: React.FC<CardProps> = ({
 						</button>
 					)}
 					{type === "forum" && (
-						<div className="flex items-center gap-1 px-2 py-1">
-							<MessageCircle className="w-5 h-5" />
-							<span>{commentsCount}</span>
+						<div className="flex items-center gap-1 px-1 md:px-2 py-1">
+							<MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
+							<span className="text-sm md:text-base">{commentsCount}</span>
 						</div>
 					)}
 				</div>

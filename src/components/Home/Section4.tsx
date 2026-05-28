@@ -33,8 +33,8 @@ export default function Section4() {
 			.slice(0, 8) || [];
 
 	return (
-		<section className="flex flex-col border-white py-7 border-t w-full mb-10">
-			<section className="flex flex-row justify-between">
+		<section className="flex flex-col border-white py-4 md:py-7 border-t w-full mb-6 md:mb-10">
+			<section className="flex flex-row justify-between items-center">
 				<h5 className="text-base font-extrabold">Galeri</h5>
 				<Link href="/gallery">
 					<svg
@@ -43,7 +43,7 @@ export default function Section4() {
 						height="17"
 						viewBox="0 0 16 17"
 						fill="none"
-						className="cursor-pointer"
+						className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
 					>
 						<path
 							d="M14.4317 1.77368L14.1347 12.2565L3.9373 2.70913L14.4317 1.77368ZM14.4317 1.77368L2.09868 14.8231"
@@ -55,7 +55,7 @@ export default function Section4() {
 					</svg>
 				</Link>
 			</section>
-			<section className="grid grid-cols-4 gap-6 mt-9">
+			<section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 md:gap-6 mt-4 md:mt-9">
 				{loading ? (
 					// Loading skeletons
 					Array.from({ length: 8 }).map((_, index) => (
@@ -65,11 +65,13 @@ export default function Section4() {
 						/>
 					))
 				) : error ? (
-					<p className="text-red-500 col-span-4">
+					<p className="text-red-500 col-span-2 sm:col-span-3 md:col-span-4">
 						Failed to load gallery items
 					</p>
 				) : galleryItems.length === 0 ? (
-					<p className="text-white/70 col-span-4">No gallery items found.</p>
+					<p className="text-white/70 col-span-2 sm:col-span-3 md:col-span-4">
+						No gallery items found.
+					</p>
 				) : (
 					galleryItems.map((item) => (
 						<Link href={`/gallery/event/${item.eventId}`} key={item.id}>

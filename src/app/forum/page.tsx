@@ -67,17 +67,17 @@ export default function ForumPage() {
 	const currentPage = forumsData?.meta?.currentPage || 1;
 
 	return (
-		<div className="container mx-auto px-[60px] py-8 w-full">
-			<div className="flex justify-between items-center mb-8">
-				<h1 className="text-[32px] font-extrabold">Forum</h1>
-				<div className="flex gap-4">
+		<div className="container mx-auto px-4 md:px-[60px] py-6 md:py-8 w-full">
+			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 md:mb-8">
+				<h1 className="text-2xl md:text-[32px] font-extrabold">Forum</h1>
+				<div className="flex flex-wrap gap-3 md:gap-4 w-full sm:w-auto">
 					<Select
 						value={status || "all"}
 						onValueChange={(value) =>
 							setStatus(value === "all" ? undefined : value)
 						}
 					>
-						<SelectTrigger className="w-[180px]">
+						<SelectTrigger className="w-full sm:w-[180px]">
 							<SelectValue placeholder="All Posts" />
 						</SelectTrigger>
 						<SelectContent>
@@ -88,7 +88,7 @@ export default function ForumPage() {
 					</Select>
 					<Link
 						href="/forum/create"
-						className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors"
+						className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors text-sm md:text-base w-full sm:w-auto text-center"
 					>
 						Create Post
 					</Link>
@@ -96,17 +96,17 @@ export default function ForumPage() {
 			</div>
 
 			{forums.length === 0 ? (
-				<div className="text-center py-12">
+				<div className="text-center py-8 md:py-12">
 					<p className="text-white/70">No forum posts found.</p>
 					<Link
 						href="/forum/create"
-						className="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors"
+						className="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-80 transition-colors text-sm md:text-base"
 					>
 						Create Your First Post
 					</Link>
 				</div>
 			) : (
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 					{forums.map((forum) => (
 						<Card
 							key={forum.id}
@@ -127,21 +127,21 @@ export default function ForumPage() {
 
 			{/* Pagination */}
 			{totalPages > 1 && (
-				<div className="flex justify-center mt-8">
-					<div className="flex space-x-2">
+				<div className="flex justify-center mt-6 md:mt-8 overflow-x-auto py-2">
+					<div className="flex space-x-1 md:space-x-2">
 						<button
 							onClick={() => setPage(Math.max(1, page - 1))}
-							className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+							className="px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
 							disabled={currentPage === 1}
 						>
-							Previous
+							Prev
 						</button>
 						{Array.from({ length: totalPages }, (_, i) => i + 1).map(
 							(pageNum) => (
 								<button
 									key={pageNum}
 									onClick={() => setPage(pageNum)}
-									className={`px-4 py-2 rounded ${
+									className={`px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded ${
 										pageNum === currentPage
 											? "bg-primary text-white"
 											: "bg-gray-800 hover:bg-gray-700 text-white"
@@ -153,7 +153,7 @@ export default function ForumPage() {
 						)}
 						<button
 							onClick={() => setPage(Math.min(totalPages, page + 1))}
-							className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+							className="px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
 							disabled={currentPage === totalPages}
 						>
 							Next

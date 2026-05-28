@@ -57,8 +57,10 @@ const BlogPage = () => {
 	const currentPage = articlesData?.meta?.currentPage || 1;
 
 	return (
-		<div className="container mx-auto px-[60px] py-8 w-full">
-			<h1 className="text-[32px] font-extrabold mb-8">Blog</h1>
+		<div className="container mx-auto px-4 md:px-[60px] py-6 md:py-8 w-full">
+			<h1 className="text-2xl md:text-[32px] font-extrabold mb-4 md:mb-8">
+				Blog
+			</h1>
 
 			{articles.length === 0 ? (
 				<div className="text-center py-12">
@@ -66,7 +68,7 @@ const BlogPage = () => {
 				</div>
 			) : (
 				<>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
 						{articles.map((article) => (
 							<Card
 								key={article.id}
@@ -85,21 +87,21 @@ const BlogPage = () => {
 
 					{/* Pagination */}
 					{totalPages > 1 && (
-						<div className="flex justify-center mt-8">
-							<div className="flex space-x-2">
+						<div className="flex justify-center mt-6 md:mt-8 overflow-x-auto py-2">
+							<div className="flex space-x-1 md:space-x-2">
 								<button
 									onClick={() => setPage(Math.max(1, page - 1))}
-									className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+									className="px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
 									disabled={currentPage === 1}
 								>
-									Previous
+									Prev
 								</button>
 								{Array.from({ length: totalPages }, (_, i) => i + 1).map(
 									(pageNum) => (
 										<button
 											key={pageNum}
 											onClick={() => setPage(pageNum)}
-											className={`px-4 py-2 rounded ${
+											className={`px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded ${
 												pageNum === currentPage
 													? "bg-primary text-white"
 													: "bg-gray-800 hover:bg-gray-700 text-white"
@@ -111,7 +113,7 @@ const BlogPage = () => {
 								)}
 								<button
 									onClick={() => setPage(Math.min(totalPages, page + 1))}
-									className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
+									className="px-3 py-1 md:px-4 md:py-2 text-sm md:text-base rounded bg-gray-800 hover:bg-gray-700 text-white disabled:opacity-50"
 									disabled={currentPage === totalPages}
 								>
 									Next

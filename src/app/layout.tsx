@@ -9,6 +9,7 @@ import { inter } from "./config";
 import { AuthProvider } from "@/context/AuthContext";
 import { DepartmentProvider } from "@/context/DepartmentContext";
 import { Toaster } from "react-hot-toast";
+import { useState, useEffect } from "react";
 
 export default function RootLayout({
 	children,
@@ -17,6 +18,31 @@ export default function RootLayout({
 }>) {
 	const pathname = usePathname();
 	const isAuthPage = pathname.startsWith("/auth");
+	const [isMobileView, setIsMobileView] = useState(false);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+	// Check if we're on client side before accessing window
+	useEffect(() => {
+		const checkScreenSize = () => {
+			setIsMobileView(window.innerWidth < 768);
+		};
+
+		// Initial check
+		checkScreenSize();
+
+		// Add event listener for window resize
+		window.addEventListener("resize", checkScreenSize);
+
+		// Cleanup
+		return () => window.removeEventListener("resize", checkScreenSize);
+	}, []);
+
+	// Close sidebar when navigating (mobile only)
+	useEffect(() => {
+		if (isMobileView) {
+			setIsSidebarOpen(false);
+		}
+	}, [pathname, isMobileView]);
 
 	return (
 		<html lang="en">
@@ -27,18 +53,31 @@ export default function RootLayout({
 					<DepartmentProvider>
 						{!isAuthPage && (
 							<>
-								<Navbar key="navbar" />
+								<Navbar
+									key="navbar"
+									isMobileView={isMobileView}
+									isSidebarOpen={isSidebarOpen}
+									toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+								/>
 								<div className={`flex flex-1`}>
-									<Sidebar key="sidebar" />
+									{(!isMobileView || isSidebarOpen) && (
+										<Sidebar
+											key="sidebar"
+											isMobileView={isMobileView}
+											closeSidebar={() => setIsSidebarOpen(false)}
+										/>
+									)}
 									<main
-										className={`flex ${
-											!isAuthPage ? "w-screen ml-[20vw]" : "w-full"
+										className={`flex flex-col ${
+											!isAuthPage && !isMobileView
+												? "w-screen md:ml-[20vw]"
+												: "w-full"
 										}`}
 									>
 										{children}
 									</main>
 								</div>
-								<Footer key="footer" />
+								<Footer key="footer" isMobileView={isMobileView} />
 							</>
 						)}
 

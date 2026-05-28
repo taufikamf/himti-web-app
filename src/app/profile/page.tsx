@@ -1,14 +1,20 @@
 import Structure from "@/components/Structure";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "HIMTI UIN Jakarta - Profile",
+	description: "Profile of HIMTI UIN Syarif Hidayatullah Jakarta",
+};
 
 const ProfilePage = () => {
 	return (
-		<section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+		<section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 			<div className="flex flex-col gap-4">
-				<h1 className="text-4xl text-center font-bold">
+				<h1 className="text-2xl md:text-4xl text-center font-bold">
 					Apa itu HIMTI UIN Jakarta?
 				</h1>
-				<p className="text-lg mt-4 font-light">
-					<span className="text-xl font-bold">
+				<p className="text-base md:text-lg mt-2 md:mt-4 font-light">
+					<span className="text-lg md:text-xl font-bold">
 						HIMTI UIN Syarif Hidayatullah Jakarta
 					</span>{" "}
 					merupakan wadah silaturahmi dan pemersatu antar Mahasiswa dengan
@@ -17,10 +23,10 @@ const ProfilePage = () => {
 					kemahasiswaan, penalaran, dan keilmuan di bidang teknologi informasi.
 				</p>
 			</div>
-			<div className="flex flex-row gap-8 mt-8">
+			<div className="flex flex-col md:flex-row gap-6 md:gap-8 mt-6 md:mt-8">
 				<div className="flex-1">
-					<h2 className="text-2xl font-bold mb-4">Visi</h2>
-					<p className="text-lg">
+					<h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">Visi</h2>
+					<p className="text-base md:text-lg">
 						Menjadikan HIMTI UIN Syarif Hidayatullah Jakarta sebagai wadah
 						pengembangan potensi diri dan penyambung aspirasi mahasisa program
 						studi Teknik Informatika UIN Syarif Hidayatullah Jakarta yang
@@ -28,18 +34,18 @@ const ProfilePage = () => {
 					</p>
 				</div>
 				<div className="flex-1">
-					<h2 className="text-2xl font-bold mb-4">Misi</h2>
+					<h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">Misi</h2>
 					<ol className="list-decimal list-inside space-y-2">
-						<li className="text-lg">
+						<li className="text-base md:text-lg">
 							Memberdayakan HIMTI sebagai sarana pengembangan diri minat dan
 							bakatmaupun keilmuwan mahasiswa program studi Teknik Informatika
 							UIN syarif hidayatullah Jakarta.
 						</li>
-						<li className="text-lg">
+						<li className="text-base md:text-lg">
 							Mengoptimalkan peran HIMTI sebagai penyambung aspirasi mahasiswa
 							program studi Teknik Informatika UIN Syarif Hidayatullah Jakarta.
 						</li>
-						<li className="text-lg">
+						<li className="text-base md:text-lg">
 							Mempererat hubungan baik pengurus dan non-pengurus HIMTI UIN
 							Syarif Hidayatullah Jakarta serta civitas akademika UIN Syarif
 							Hidayatullah Jakarta.
@@ -47,9 +53,11 @@ const ProfilePage = () => {
 					</ol>
 				</div>
 			</div>
-			<hr className="my-16 border-2" />
-			<h1 className="text-4xl mb-10 text-center font-bold">Mars HIMTI</h1>
-			<div className="flex flex-row gap-10 mt-8">
+			<hr className="my-10 md:my-16 border-2" />
+			<h1 className="text-2xl md:text-4xl mb-6 md:mb-10 text-center font-bold">
+				Mars HIMTI
+			</h1>
+			<div className="flex flex-col md:flex-row gap-6 md:gap-10 mt-4 md:mt-8">
 				<div className="flex-1 flex items-center">
 					<div className="aspect-video w-full">
 						<iframe
@@ -62,8 +70,10 @@ const ProfilePage = () => {
 					</div>
 				</div>
 				<div className="flex-1">
-					<h2 className="text-2xl font-bold mb-4">Lirik Mars HIMTI</h2>
-					<p className="text-lg whitespace-pre-line">
+					<h2 className="text-xl md:text-2xl font-bold mb-2 md:mb-4">
+						Lirik Mars HIMTI
+					</h2>
+					<p className="text-base md:text-lg whitespace-pre-line">
 						{`Bangkitlah bersama HIMTI
 Bersama membangun negri
 Terbentuknya jiwa madani
@@ -86,8 +96,8 @@ Menjunjung tinggi informatika`}
 					</p>
 				</div>
 			</div>
-			<hr className="my-16 border-2" />
-			<h1 className="text-4xl mb-10 text-center font-bold">
+			<hr className="my-10 md:my-16 border-2" />
+			<h1 className="text-2xl md:text-4xl mb-6 md:mb-10 text-center font-bold">
 				Struktur Kepengurusan
 			</h1>
 			<div className="relative pt-8">

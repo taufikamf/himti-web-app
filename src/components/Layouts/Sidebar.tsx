@@ -3,10 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
-export default function Sidebar() {
+interface SidebarProps {
+	isMobileView: boolean;
+	closeSidebar: () => void;
+}
+
+export default function Sidebar({ isMobileView, closeSidebar }: SidebarProps) {
 	const pathname = usePathname();
-
 	const [active, setActive] = useState(pathname);
 
 	useEffect(() => {
@@ -15,6 +20,9 @@ export default function Sidebar() {
 
 	const handleLinkClick = (route: string) => {
 		setActive(route);
+		if (isMobileView) {
+			closeSidebar();
+		}
 	};
 
 	const NavLink = ({
@@ -46,7 +54,7 @@ export default function Sidebar() {
 				)}
 				<Link
 					href={href}
-					className={`text-2xl ${
+					className={`text-xl md:text-2xl ${
 						isActive ? "font-extrabold" : "font-semibold"
 					}`}
 					onClick={() => handleLinkClick(href)}
@@ -58,8 +66,21 @@ export default function Sidebar() {
 	};
 
 	return (
-		<aside className="h-screen fixed pl-[60px] pt-[100px] flex-col">
-			<section>
+		<aside
+			className={`${
+				isMobileView ? "fixed inset-0 z-50 bg-black/90" : "h-screen fixed"
+			} pl-4 md:pl-[60px] pt-[60px] md:pt-[100px] flex-col`}
+		>
+			{isMobileView && (
+				<button
+					onClick={closeSidebar}
+					className="absolute top-4 right-4 text-white hover:text-primary focus:outline-none"
+					aria-label="Close menu"
+				>
+					<X size={24} />
+				</button>
+			)}
+			<section className="flex flex-col gap-4">
 				<NavLink href="/">Home</NavLink>
 				<NavLink href="/profile">Profile</NavLink>
 				<NavLink href="/information">Information</NavLink>
